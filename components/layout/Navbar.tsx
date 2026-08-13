@@ -7,6 +7,7 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
+import GlobalSearch from "@/components/search/GlobalSearch";
 
 const menuItems = [
   {
@@ -35,11 +36,22 @@ export default function Navbar() {
   const { cart, openCart } = useCart();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
 
   const closeMenu = () => {
     setIsMenuOpen(false);
+  };
+
+  const openSearch = () => {
+    setIsSearchOpen(true);
+  };
+
+  const closeSearch = () => {
+    setIsSearchOpen(false);
+    setSearchQuery("");
   };
 
   return (
@@ -86,16 +98,15 @@ export default function Navbar() {
           <div className="flex w-20 justify-end gap-1 md:w-32 md:gap-2">
             {/* SEARCH */}
 
-            <Link href="/shop?focus=search" aria-label="Search stickers">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full hover:bg-gray-100"
-                aria-label="Search stickers"
-              >
-                <Search className="h-5 w-5 md:h-6 md:w-6" />
-              </Button>
-            </Link>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full hover:bg-gray-100"
+              onClick={openSearch}
+              aria-label="Search stickers"
+            >
+              <Search className="h-5 w-5 md:h-6 md:w-6" />
+            </Button>
 
             {/* WISHLIST */}
 
@@ -130,6 +141,17 @@ export default function Navbar() {
       </header>
 
       {/* =====================================================
+          GLOBAL SEARCH
+      ====================================================== */}
+
+      <GlobalSearch
+        isOpen={isSearchOpen}
+        query={searchQuery}
+        onQueryChange={setSearchQuery}
+        onClose={closeSearch}
+      />
+
+      {/* =====================================================
           MENU OVERLAY
       ====================================================== */}
 
@@ -148,7 +170,7 @@ export default function Navbar() {
             {/* MENU HEADER */}
 
             <div className="flex h-[82px] items-center justify-between border-b px-5 md:h-[96px]">
-              {/* ACTUAL LOGO — REPLACED TEXT */}
+              {/* LOGO */}
 
               <Link
                 href="/"
